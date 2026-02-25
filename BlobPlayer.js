@@ -23,6 +23,14 @@ class BlobPlayer {
     this.wobble = 7;
     this.points = 48;
     this.wobbleFreq = 0.9;
+
+    // ✅ NEW: emotion state
+    this.emotion = "sad";
+  }
+
+  // ✅ NEW
+  setEmotion(e) {
+    this.emotion = e;
   }
 
   spawnFromLevel(level) {
@@ -46,7 +54,6 @@ class BlobPlayer {
   }
 
   update(level) {
-    // input
     let move = 0;
     if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) move -= 1;
     if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) move += 1;
@@ -57,7 +64,6 @@ class BlobPlayer {
 
     this.vy += this.gravity;
 
-    // collider box
     let box = {
       x: this.x - this.r,
       y: this.y - this.r,
@@ -65,7 +71,7 @@ class BlobPlayer {
       h: this.r * 2,
     };
 
-    // move X
+    // Move X
     box.x += this.vx;
     for (const s of level.platforms) {
       if (BlobPlayer.overlap(box, s)) {
@@ -75,7 +81,7 @@ class BlobPlayer {
       }
     }
 
-    // move Y
+    // Move Y
     box.y += this.vy;
     this.onGround = false;
     for (const s of level.platforms) {
@@ -91,11 +97,9 @@ class BlobPlayer {
       }
     }
 
-    // write back
     this.x = box.x + box.w / 2;
     this.y = box.y + box.h / 2;
 
-    // keep inside world horizontally, allow falling below world
     this.x = constrain(this.x, this.r, level.w - this.r);
 
     this.t += this.tSpeed;
@@ -116,6 +120,23 @@ class BlobPlayer {
       vertex(this.x + cos(a) * rr, this.y + sin(a) * rr);
     }
     endShape(CLOSE);
+
+    // ✅ FACE (emotion-based)
+
+    fill(0);
+    ellipse(this.x - 6, this.y - 4, 4);
+    ellipse(this.x + 6, this.y - 4, 4);
+
+    stroke(0);
+    noFill();
+
+    if (this.emotion === "happy") {
+      arc(this.x, this.y + 2, 16, 12, 0, PI);
+    } else {
+      arc(this.x, this.y + 8, 16, 12, PI, TWO_PI);
+    }
+
+    noStroke();
   }
 
   static overlap(a, b) {
