@@ -26,9 +26,11 @@ let level;
 let player;
 let cam;
 
-let hopeLevel = 0;
-const MAX_HOPE = 5;
+let emotion = "sad";
+let emotionTimer = 0;
+const HAPPY_DURATION = 3000;
 
+// --- energy system ---
 let energies = [];
 
 function preload() {
@@ -55,9 +57,9 @@ function loadLevel(i) {
   cam.clampToWorld(level.w, level.h);
 
   generateEnergies();
-  hopeLevel = 0;
 }
 
+// --- generate 1 energy per screen ---
 function generateEnergies() {
   energies = [];
   const screens = Math.floor(level.w / VIEW_W);
@@ -73,38 +75,56 @@ function generateEnergies() {
 }
 
 function draw() {
+  // --- game state ---
   player.update(level);
 
-  // Fall death
+  // Fall death → respawn
   if (player.y - player.r > level.deathY) {
     loadLevel(levelIndex);
     return;
   }
 
-  // Reset cycle when reaching end
-  if (player.x > level.w - 100) {
-    hopeLevel = 0;
-    generateEnergies();
-    player.x = 50; // move player back left smoothly
+  // --- emotion timeout ---
+  if (emotion === "happy") {
+    if (millis() - emotionTimer > HAPPY_DURATION) {
+      emotion = "sad";
+    }
   }
 
+  // --- view state ---
   cam.followSideScrollerX(player.x, level.camLerp);
   cam.y = 0;
   cam.clampToWorld(level.w, level.h);
 
+  // --- draw world ---
   cam.begin();
-
-  level.drawWorld(hopeLevel);
+  level.drawWorld();
 
   drawEnergies();
   checkEnergyCollision();
 
-  player.setEmotion(hopeLevel > 2 ? "happy" : "sad");
+  player.setEmotion(emotion);
   player.draw(level.theme.blob);
 
   cam.end();
 
-  drawHUD();
+  // --- HUD ---
+  fill(0);
+  noStroke();
+  text(level.name + " (Sad → Energy → Happy → Sad)", 10, 18);
+}
+
+function drawEnergies() {
+  for (let e of energies) {
+    if (!e.collected) {
+      // light yellow glow
+      fill(255, 240, 120);
+      ellipse(e.x, e.y, e.r * 2);
+
+      fill(255, 255, 200, 120);
+      ellipse(e.x, e.y, e.r * 3);
+    }
+  }
 }
 
 function checkEnergyCollision() {
@@ -113,32 +133,16 @@ function checkEnergyCollision() {
       let d = dist(player.x, player.y, e.x, e.y);
       if (d < player.r + e.r) {
         e.collected = true;
-        hopeLevel = min(MAX_HOPE, hopeLevel + 1);
+        emotion = "happy";
+        emotionTimer = millis();
       }
     }
   }
-}
-
-function drawEnergies() {
-  for (let e of energies) {
-    if (!e.collected) {
-      fill(80, 255, 120);
-      ellipse(e.x, e.y, e.r * 2);
-
-      fill(0, 255, 120, 90);
-      ellipse(e.x, e.y, e.r * 4);
-    }
-  }
-}
-
-function drawHUD() {
-  fill(0);
-  noStroke();
-  text("Hope Level: " + hopeLevel + " / 5", 10, 18);
 }
 
 function keyPressed() {
   if (key === " " || key === "W" || key === "w" || keyCode === UP_ARROW) {
     player.tryJump();
   }
+  if (key === "r" || key === "R") loadLevel(levelIndex);
 }
