@@ -1,6 +1,6 @@
 ## Project Title
 
-GBDA302_Week 4_Side Quest 4: JSON Platformer
+GBDA302_Week 5_Side Quest 5
 
 ---
 
@@ -12,19 +12,25 @@ Min Htet Naing, dmnaing (21008098)
 
 ## Description
 
-This project builds on the Week 4 platformer example to create a small playable level system using JSON data, reusable classes, and loop-based world generation. Levels are defined externally in a JSON file and dynamically rendered at runtime. A blob player can move, jump, and progress between levels by reaching a door.
+This project builds on the Week 5 Example 5 modular camera system to create a reflective, side-scrolling experience in a world larger than the screen. The level is defined through JSON and rendered using reusable classes, maintaining separation between world logic, camera logic, and player movement.
 
-The focus of this side quest is not advanced gameplay, but clean structure, data-driven design, and clear separation of responsibilities across files.
+The focus of this side quest is emotional pacing through environmental design. The world begins in a melancholic rainy state. Hidden green energy symbols are placed across the world; when the player reaches one, the rain softens, the background lightens slightly, and the blob briefly becomes happy before returning to a sad state.
+
+The goal is not complex mechanics, but subtle emotional contrast using motion, camera smoothing, and environmental change.
 
 ---
 
 ## Setup and Interaction Instructions
 
-- Open the GitHub Pages link in Google Chrome.
-- **Move:** A / D or ← / →
-- **Jump:** Space / W / ↑
-- **Next Level (optional):** N
-- **Goal:** Make the object reach the door and which will get you into the next level
+Open the GitHub Pages link in Google Chrome.
+
+Move: A / D or ← / →
+
+Jump: Space / W / ↑
+
+Reset Level: R
+
+Goal: Explore the world and discover hidden green energy symbols.
 
 ---
 
@@ -32,17 +38,17 @@ The focus of this side quest is not advanced gameplay, but clean structure, data
 
 a. Post-Playtest (3 changes)
 
-Added a clearly visible goal zone defined in the JSON level data to make the win condition more obvious to players.
+Added one energy object per screen width to encourage exploration rather than clustering rewards in one location.
 
-Adjusted platform spacing and heights to improve jump readability and reduce trial-and-error movement.
+Adjusted rain opacity and speed to create a clearer emotional contrast between the sad and happy states.
 
-Implemented automatic level progression when the player reaches the goal, removing the need for manual input.
+Refined the duration of the happy state to 3 seconds to make the transition noticeable but temporary.
 
 b. Post-Showcase (2 planned improvements)
 
-Add visual feedback when the player reaches the goal, such as a short animation or on-screen text, to better communicate success.
+Add subtle glow or pulse animation to the energy symbols to make them feel more alive and modern.
 
-Introduce hazards or alternate platform types defined through JSON data to add variety and challenge without changing core mechanics.
+Introduce layered background gradients or parallax elements to enhance the meditative camera effect.
 
 ---
 
